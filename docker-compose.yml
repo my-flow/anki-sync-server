@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  anki-sync-server:
+    image: myflow/anki-sync-server:latest
+    env_file: .env
+    volumes:
+      - ./data:/data
+    ports:
+      - 80:27701
