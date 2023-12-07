@@ -17,7 +17,11 @@ HEALTHCHECK CMD curl http://localhost:${SYNC_PORT}/sync/meta || exit 1
 ARG SYNC_PORT
 EXPOSE ${SYNC_PORT}
 
-RUN groupadd anki && useradd --gid anki anki
+ARG SYNC_BASE
+RUN groupadd anki \
+&& useradd --gid anki anki \
+&& mkdir -p "${SYNC_BASE}" \
+&& chown -R anki:anki "${SYNC_BASE}"
 USER anki:anki
 
 ENTRYPOINT [ "anki-sync-server" ]
