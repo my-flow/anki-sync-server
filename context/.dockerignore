@@ -1,2 +1,7 @@
 *
 !install_anki.sh
+!install_healthcheck.sh
+!Cargo.lock
+!Cargo.toml
+!src/
+!src/main.rs

@@ -9,6 +9,7 @@ include .env
 build: --guard-ANKI_VERSION lint
 	docker buildx build context/ \
 		--build-arg ANKI_VERSION=${ANKI_VERSION} \
+		--build-arg HEALTHCHECK_PATH=${HEALTHCHECK_PATH} \
 		--build-arg SYNC_PORT=${SYNC_PORT} \
 		--no-cache \
 		--platform linux/amd64,linux/arm64 \
