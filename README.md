@@ -6,7 +6,7 @@
 [![DockerHub pulls](https://img.shields.io/docker/pulls/myflow/anki-sync-server)](https://hub.docker.com/repository/docker/myflow/anki-sync-server)
 [![DockerHub stars](https://img.shields.io/docker/stars/myflow/anki-sync-server)](https://hub.docker.com/repository/docker/myflow/anki-sync-server)
 
-[Anki][https://apps.ankiweb.net/] is a powerful open source flashcard application, which helps you
+[Anki](https://apps.ankiweb.net) is a powerful open source flashcard application, which helps you
 quickly and easily memorize facts over the long term utilizing a spaced
 repetition algorithm. Anki's main form is a desktop application (for Windows,
 Linux and macOS) which can sync to a web version (AnkiWeb) and mobile
