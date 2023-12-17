@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  ANKI_VERSION: 23.10.1
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Load variables from file
+        uses: cardinalby/export-env-action@2.2.0
+        with:
+          envFile: .env
+
+      - name: Short SHA
+        uses: benjlevesque/short-sha@v2.2
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          build-args: |
+            ANKI_VERSION=${{ env.ANKI_VERSION }}
+            HEALTHCHECK_PATH=${{ env.HEALTHCHECK_PATH}}
+            SYNC_PORT=${{ env.SYNC_PORT }}
+          context: ./context
+          no-cache: true
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ vars.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ env.SHA }}

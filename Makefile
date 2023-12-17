@@ -1,6 +1,6 @@
 DOCKER_USERNAME ?= myflow
 IMAGE_NAME ?= anki-sync-server
-GIT_HASH ?= $(shell git log --format="%h" -n 1)
+SHA ?= $(shell git log --format="%h" -n 1)
  
 .PHONY: build test guard-% lint
 
@@ -15,7 +15,7 @@ build: --guard-ANKI_VERSION lint
 		--platform linux/amd64,linux/arm64 \
 		--push \
 		--tag ${DOCKER_USERNAME}/${IMAGE_NAME}:${ANKI_VERSION} \
-		--tag ${DOCKER_USERNAME}/${IMAGE_NAME}:${GIT_HASH}
+		--tag ${DOCKER_USERNAME}/${IMAGE_NAME}:${SHA}
 
 test: --guard-ANKI_VERSION lint
 	docker buildx build context/ \
