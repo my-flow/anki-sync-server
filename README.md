@@ -20,8 +20,8 @@ AnkiWeb.
 ```
 docker run \
     --env-file ./.env \
-    --publish 80:27701 \
-    --volume ./data:/data \
+    --publish 80:8080 \
+    --volume ./data:/.syncserver \
     myflow/anki-sync-server:23.10.1
 ```
 
@@ -33,15 +33,15 @@ services:
     image: myflow/anki-sync-server:23.10.1
     env_file: .env
     volumes:
-      - ./data:/data
+      - ./data:/.syncserver
     ports:
-      - 80:27701
+      - 80:8080
 ```
 
 # Environment Variables
 |Name|Default Value|
 |:-|:-|
-|SYNC_USER1|whatever@example.com:pa$$word|
-|SYNC_BASE|/data|
-|SYNC_PORT|27701|
+|SYNC_USER1|user:pass|
+|SYNC_BASE|/.syncserver|
+|SYNC_PORT|8080|
 |HEALTHCHECK_PATH|/sync/hostKey|
