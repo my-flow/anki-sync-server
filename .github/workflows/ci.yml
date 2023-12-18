@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - 'main'
+  workflow_dispatch:
+    inputs:
+      anki_version:
+        description: 'Git tag from https://github.com/ankitects/anki/tags'
+        type: string
+        required: true
 
 env:
-  ANKI_VERSION: 23.10.1
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '23.10.1' }}
 
 jobs:
   docker:
@@ -24,7 +30,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: cardinalby/export-env-action@2.2.0
