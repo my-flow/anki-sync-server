@@ -7,7 +7,7 @@ use hyper::{http::StatusCode, Client};
 async fn main() {
     let port = match env::var("SYNC_PORT") {
         Ok(p) => p,
-        Err(_) => String::from("27701"),
+        Err(_) => String::from("8080"),
     };
 
     let path = match env::var("HEALTHCHECK_PATH") {
