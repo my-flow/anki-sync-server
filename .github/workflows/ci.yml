@@ -12,7 +12,7 @@ on:
         required: true
 
 env:
-  ANKI_VERSION: ${{ github.event.inputs.anki_version || '23.12' }}
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '23.12.1' }}
 
 jobs:
   docker:
