@@ -12,7 +12,7 @@ on:
         required: true
 
 env:
-  ANKI_VERSION: ${{ github.event.inputs.anki_version || '23.12' }}
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '23.12.1' }}
 
 jobs:
   docker:
@@ -51,5 +51,6 @@ jobs:
           no-cache: true
           platforms: linux/amd64,linux/arm64
           push: true
+          sbom: true
           tags: |
             ${{ vars.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ env.SHA }}

@@ -13,7 +13,9 @@ build: --guard-ANKI_VERSION lint
 		--build-arg SYNC_PORT=${SYNC_PORT} \
 		--no-cache \
 		--platform linux/amd64,linux/arm64 \
+		--provenance=true \
 		--push \
+		--sbom=true \
 		--tag ${DOCKER_USERNAME}/${IMAGE_NAME}:${ANKI_VERSION} \
 		--tag ${DOCKER_USERNAME}/${IMAGE_NAME}:${SHA}
 
@@ -22,7 +24,9 @@ test: --guard-ANKI_VERSION lint
 		--build-arg ANKI_VERSION=${ANKI_VERSION} \
 		--build-arg HEALTHCHECK_PATH=${HEALTHCHECK_PATH} \
 		--build-arg SYNC_PORT=${SYNC_PORT} \
-		--platform linux/amd64,linux/arm64
+		--platform linux/amd64,linux/arm64 \
+		--provenance=true \
+		--sbom=true
 
 lint:
 	hadolint context/Dockerfile
