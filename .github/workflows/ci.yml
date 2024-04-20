@@ -15,7 +15,7 @@ on:
         required: true
 
 env:
-  ANKI_VERSION: ${{ github.event.inputs.anki_version || '24.04' }}
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '24.04.1' }}
 
 jobs:
   docker:
@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Load variables from file
-        uses: cardinalby/export-env-action@2.2.1
+        uses: cardinalby/export-env-action@2.2.2
         with:
           envFile: .env
 

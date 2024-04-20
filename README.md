@@ -22,7 +22,7 @@ docker run \
     --env-file ./.env \
     --publish 80:8080 \
     --volume ./data:/.syncserver \
-    myflow/anki-sync-server:24.04
+    myflow/anki-sync-server:24.04.1
 ```
 
 # Docker-compose
@@ -30,7 +30,7 @@ docker run \
 version: "3.8"
 services:
   anki-sync-server:
-    image: myflow/anki-sync-server:24.04
+    image: myflow/anki-sync-server:24.04.1
     env_file: .env
     volumes:
       - ./data:/.syncserver
