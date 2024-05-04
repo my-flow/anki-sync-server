@@ -1,7 +1,11 @@
 use std::env;
 use std::process::exit;
 
-use hyper::{http::StatusCode, Client};
+use bytes::Bytes;
+use http_body_util::Full;
+use hyper::{http::StatusCode};
+use hyper_util::client::legacy::Client;
+use hyper_util::rt::TokioExecutor;
 
 #[tokio::main]
 async fn main() {
@@ -15,7 +19,8 @@ async fn main() {
         Err(_) => String::new(),
     };
 
-    let client = Client::new();
+    let client: Client<_, Full<Bytes>> = Client::builder(TokioExecutor::new())
+        .build_http();
 
     let url = format!("http://localhost:{port}{path}").parse().unwrap();
     let res = client.get(url).await;

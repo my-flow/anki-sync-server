@@ -4,8 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-hyper = { version = "0.14.28", features = ["full"] }
-tokio = { version = "1.37.0", features = ["full"] }
+bytes = { version = "1" }
+http-body-util = { version = "0.1" }
+hyper = { version = "1", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
 
 [profile.release]
 opt-level = "z"
