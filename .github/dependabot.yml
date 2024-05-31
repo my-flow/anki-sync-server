@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/context"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "cargo"
+    directory: "/context"
+    schedule:
+      interval: "weekly"
