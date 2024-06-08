@@ -6,7 +6,10 @@ on:
       - 'develop'
   push:
     branches:
+      - 'develop'
       - 'main'
+      - 'release/**'
+    tags: [ 'v*.*.*' ]
   workflow_dispatch:
     inputs:
       anki_version:
@@ -15,7 +18,7 @@ on:
         required: true
 
 env:
-  ANKI_VERSION: ${{ github.event.inputs.anki_version || '24.06' }}
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '24.06.1' }}
 
 jobs:
   docker:
@@ -26,7 +29,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -53,7 +56,7 @@ jobs:
           context: ./context
           no-cache: true
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
           sbom: true
           tags: |
             ${{ vars.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ env.SHA }}
