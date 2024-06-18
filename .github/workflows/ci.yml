@@ -9,7 +9,7 @@ on:
       - 'develop'
       - 'main'
       - 'release/**'
-    tags: [ 'v*.*.*' ]
+    tags: [ '*' ]
   workflow_dispatch:
     inputs:
       anki_version:
