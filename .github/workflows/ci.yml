@@ -9,7 +9,7 @@ on:
       - 'develop'
       - 'main'
       - 'release/**'
-    tags: [ 'v*.*.*' ]
+    tags: [ '*' ]
   workflow_dispatch:
     inputs:
       anki_version:
@@ -18,7 +18,7 @@ on:
         required: true
 
 env:
-  ANKI_VERSION: ${{ github.event.inputs.anki_version || '24.06.1' }}
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '24.06.2' }}
 
 jobs:
   docker:
@@ -47,7 +47,7 @@ jobs:
         uses: benjlevesque/short-sha@v3.0
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: |
             ANKI_VERSION=${{ env.ANKI_VERSION }}
