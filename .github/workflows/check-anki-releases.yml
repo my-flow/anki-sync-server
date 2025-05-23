@@ -1,0 +1,121 @@
+name: Check for New Anki Releases
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest Anki release
+        id: anki-release
+        run: |
+          # Install jq for JSON parsing
+          sudo apt-get update && sudo apt-get install -y jq
+
+          # Fetch latest release from Anki's GitHub API
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/ankitects/anki/releases/latest | jq -r '.tag_name')
+          if [ "$LATEST_RELEASE" = "null" ] || [ -z "$LATEST_RELEASE" ]; then
+            echo "Failed to fetch latest Anki release"
+            exit 1
+          fi
+          echo "latest_version=$LATEST_RELEASE" >> $GITHUB_OUTPUT
+          echo "Latest Anki version: $LATEST_RELEASE"
+
+      - name: Check current version in README
+        id: current-version
+        run: |
+          # Extract current version from README.md
+          CURRENT_VERSION=$(grep -o 'myflow/anki-sync-server:[0-9]\+\.[0-9]\+\.[0-9]\+' README.md | head -1 | cut -d':' -f2)
+          if [ -z "$CURRENT_VERSION" ]; then
+            echo "Failed to extract current version from README.md"
+            exit 1
+          fi
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version in README: $CURRENT_VERSION"
+
+      - name: Compare versions and create PR
+        if: steps.anki-release.outputs.latest_version != steps.current-version.outputs.current_version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST_VERSION=${{ steps.anki-release.outputs.latest_version }}
+          CURRENT_VERSION=${{ steps.current-version.outputs.current_version }}
+          BRANCH_NAME="update-anki-$LATEST_VERSION"
+
+          # Check if branch or PR already exists
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists, skipping PR creation"
+            exit 0
+          fi
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Create new branch
+          git checkout -b "$BRANCH_NAME"
+
+          # Update README.md with new version
+          sed -i "s/myflow\/anki-sync-server:${CURRENT_VERSION}/myflow\/anki-sync-server:${LATEST_VERSION}/g" README.md
+          
+          # Update docker-compose.yml if it exists and contains version
+          DOCKER_COMPOSE_UPDATED=false
+          if [ -f docker-compose.yml ] && grep -q "myflow/anki-sync-server:${CURRENT_VERSION}" docker-compose.yml; then
+            sed -i "s/myflow\/anki-sync-server:${CURRENT_VERSION}/myflow\/anki-sync-server:${LATEST_VERSION}/g" docker-compose.yml
+            DOCKER_COMPOSE_UPDATED=true
+          fi
+
+          # Update CI workflow ANKI_VERSION default
+          CI_WORKFLOW_UPDATED=false
+          if [ -f .github/workflows/ci.yml ] && grep -q "ANKI_VERSION: \${{ github.event.inputs.anki_version || '${CURRENT_VERSION}' }}" .github/workflows/ci.yml; then
+            sed -i "s/ANKI_VERSION: \${{ github.event.inputs.anki_version || '${CURRENT_VERSION}' }}/ANKI_VERSION: \${{ github.event.inputs.anki_version || '${LATEST_VERSION}' }}/g" .github/workflows/ci.yml
+            CI_WORKFLOW_UPDATED=true
+          fi
+
+          # Check if there are changes to commit
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Commit changes (only add files that were actually modified)
+          git add README.md
+          if [ "$DOCKER_COMPOSE_UPDATED" = "true" ]; then
+            git add docker-compose.yml
+          fi
+          if [ "$CI_WORKFLOW_UPDATED" = "true" ]; then
+            git add .github/workflows/ci.yml
+          fi
+          git commit -m "Update Anki version to $LATEST_VERSION"
+
+          # Push branch
+          git push origin "$BRANCH_NAME"
+
+          # Create PR using GitHub CLI
+          gh pr create \
+            --title "Update Anki version to $LATEST_VERSION" \
+            --body "This PR updates the Anki sync server to use Anki version \`$LATEST_VERSION\`.
+
+          ## Changes
+          - Updated version references from \`$CURRENT_VERSION\` to \`$LATEST_VERSION\` in README.md
+          - Updated docker-compose.yml if applicable
+          - Updated CI workflow default ANKI_VERSION if applicable
+
+          ## Anki Release Notes
+          View the full release notes at: https://github.com/ankitects/anki/releases/tag/$LATEST_VERSION
+
+          🤖 This PR was automatically created by the check-anki-releases workflow." \
+            --head "$BRANCH_NAME" \
+            --base "develop"
