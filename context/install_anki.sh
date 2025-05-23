@@ -6,5 +6,6 @@ apt-get install --no-install-recommends --yes protobuf-compiler
 
 cargo install \
     --git https://github.com/ankitects/anki.git \
+    --locked \
     --tag "${1}" \
     anki-sync-server

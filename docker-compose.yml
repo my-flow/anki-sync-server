@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   anki-sync-server:
-    image: myflow/anki-sync-server:24.06.3
+    image: myflow/anki-sync-server:25.02.5
     env_file: .env
     user: "${PUID}:${GUID}"
     volumes:
