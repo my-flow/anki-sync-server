@@ -17,6 +17,9 @@ on:
         type: string
         required: true
 
+permissions:
+  contents: read
+
 env:
   ANKI_VERSION: ${{ github.event.inputs.anki_version || '25.02.5' }}
 
