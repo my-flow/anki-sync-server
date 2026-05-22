@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Load variables from file
-        uses: cardinalby/export-env-action@2.2.2
+        uses: cardinalby/export-env-action@2.2.3
         with:
           envFile: .env
 
