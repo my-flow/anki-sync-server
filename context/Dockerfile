@@ -1,4 +1,4 @@
-FROM rust:1.93.1-slim AS builder
+FROM rust:1.97.0-slim AS builder
 WORKDIR /usr/local/bin
 COPY install_anki.sh .
 ARG ANKI_VERSION
