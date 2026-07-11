@@ -50,7 +50,7 @@ jobs:
         uses: benjlevesque/short-sha@v3.0
 
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             ANKI_VERSION=${{ env.ANKI_VERSION }}
