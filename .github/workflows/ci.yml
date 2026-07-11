@@ -47,7 +47,7 @@ jobs:
           envFile: .env
 
       - name: Short SHA
-        uses: benjlevesque/short-sha@v3.0
+        uses: benjlevesque/short-sha@v4.0
 
       - name: Build and push
         uses: docker/build-push-action@v7
