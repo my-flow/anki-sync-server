@@ -79,8 +79,8 @@ jobs:
 
           # Update CI workflow ANKI_VERSION default
           CI_WORKFLOW_UPDATED=false
-          if [ -f .github/workflows/ci.yml ] && grep -q "ANKI_VERSION: \${{ github.event.inputs.anki_version || '${CURRENT_VERSION}' }}" .github/workflows/ci.yml; then
-            sed -i "s/ANKI_VERSION: \${{ github.event.inputs.anki_version || '${CURRENT_VERSION}' }}/ANKI_VERSION: \${{ github.event.inputs.anki_version || '${LATEST_VERSION}' }}/g" .github/workflows/ci.yml
+          if [ -f .github/workflows/ci.yml ] && grep -qF "|| '${CURRENT_VERSION}' }}" .github/workflows/ci.yml; then
+            sed -i "s/|| '${CURRENT_VERSION}' }}/|| '${LATEST_VERSION}' }}/g" .github/workflows/ci.yml
             CI_WORKFLOW_UPDATED=true
           fi
 
