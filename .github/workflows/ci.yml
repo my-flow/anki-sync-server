@@ -21,7 +21,7 @@ permissions:
   contents: read
 
 env:
-  ANKI_VERSION: ${{ github.event.inputs.anki_version || '25.02.5' }}
+  ANKI_VERSION: ${{ github.event.inputs.anki_version || '26.05' }}
 
 jobs:
   docker:
