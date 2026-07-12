@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ANKI_BOT_TOKEN }}
 
       - name: Get latest Anki release
         id: anki-release
@@ -48,7 +48,7 @@ jobs:
       - name: Compare versions and create PR
         if: steps.anki-release.outputs.latest_version != steps.current-version.outputs.current_version
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.ANKI_BOT_TOKEN }}
         run: |
           LATEST_VERSION=${{ steps.anki-release.outputs.latest_version }}
           CURRENT_VERSION=${{ steps.current-version.outputs.current_version }}
