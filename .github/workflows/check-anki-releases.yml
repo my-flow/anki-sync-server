@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ANKI_BOT_TOKEN }}
 
       - name: Get latest Anki release
         id: anki-release
@@ -48,7 +48,7 @@ jobs:
       - name: Compare versions and create PR
         if: steps.anki-release.outputs.latest_version != steps.current-version.outputs.current_version
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.ANKI_BOT_TOKEN }}
         run: |
           LATEST_VERSION=${{ steps.anki-release.outputs.latest_version }}
           CURRENT_VERSION=${{ steps.current-version.outputs.current_version }}
@@ -79,8 +79,8 @@ jobs:
 
           # Update CI workflow ANKI_VERSION default
           CI_WORKFLOW_UPDATED=false
-          if [ -f .github/workflows/ci.yml ] && grep -q "ANKI_VERSION: \${{ github.event.inputs.anki_version || '${CURRENT_VERSION}' }}" .github/workflows/ci.yml; then
-            sed -i "s/ANKI_VERSION: \${{ github.event.inputs.anki_version || '${CURRENT_VERSION}' }}/ANKI_VERSION: \${{ github.event.inputs.anki_version || '${LATEST_VERSION}' }}/g" .github/workflows/ci.yml
+          if [ -f .github/workflows/ci.yml ] && grep -qF "|| '${CURRENT_VERSION}' }}" .github/workflows/ci.yml; then
+            sed -i "s/|| '${CURRENT_VERSION}' }}/|| '${LATEST_VERSION}' }}/g" .github/workflows/ci.yml
             CI_WORKFLOW_UPDATED=true
           fi
 
